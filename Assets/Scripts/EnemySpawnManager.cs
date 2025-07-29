@@ -80,7 +80,16 @@ public class EnemySpawnManager : MonoBehaviour
 
     private void StartWave(int index)
     {
-        gameObject.GetComponent<MapGenerator>().GenerateBoxes(index);
+        if (index < 6)
+        {
+            gameObject.GetComponent<MapGenerator>().GenerateBoxes(index);
+        }
+        else
+        {
+            gameObject.GetComponent<MapGenerator>().GenerateBoxes(index/2);
+
+        }
+
         Dictionary<int, GameObject> waveData = index switch
         {
             0 => wave1,

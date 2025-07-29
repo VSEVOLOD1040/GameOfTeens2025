@@ -145,7 +145,7 @@ public class UIManager : MonoBehaviour
     public void ToMenu()
     {
         SceneManager.LoadScene(0);
-
+        Time.timeScale = 1f;
     }
 
     public void ShowBoostPanel(string boostName, float duration)

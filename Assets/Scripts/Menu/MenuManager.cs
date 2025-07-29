@@ -14,7 +14,9 @@ public class MenuManager : MonoBehaviour
     public Slider sfx;
     public void Play()
     {
+
         SceneManager.LoadScene(1);
+
     }
     public void Settings()
     {

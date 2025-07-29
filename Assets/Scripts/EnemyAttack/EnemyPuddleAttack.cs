@@ -10,10 +10,13 @@ public class EnemyPuddleAttack : EnemyAttack
     public float attackCooldown = 15f;
     private float lastAttackTime = -Mathf.Infinity;
     public float TimeOfExistence;
+    
     public override void PerformAttack(Transform target)
     {
         if (Time.time - lastAttackTime < attackCooldown)
             return;
+
+
 
         lastAttackTime = Time.time;
 
@@ -31,6 +34,8 @@ public class EnemyPuddleAttack : EnemyAttack
         {
             spawnPosition.y = hit.point.y;
         }
+
+        gameObject.GetComponent<AudioSource>().Play();
 
         GameObject puddlePrefab = puddlePrefabs[Random.Range(0, puddlePrefabs.Count)];
         GameObject inst = Instantiate(puddlePrefab, spawnPosition, Quaternion.identity);

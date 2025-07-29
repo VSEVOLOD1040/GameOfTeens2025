@@ -10,7 +10,7 @@ public class WeaponController : MonoBehaviour
     public float fireRate;
     private float fireTimer = 0f;
 
-    private int attackMode = 1;
+    public int attackMode = 1;
 
     public float bullet_damage;
     public float laser_damage;
@@ -22,6 +22,12 @@ public class WeaponController : MonoBehaviour
 
     private float lastHorizontalInput = 0f;
 
+    public AudioClip shoot;
+    public AudioClip lazer;
+    public AudioClip rocket;
+
+    public bool bonus_shootrate_up;
+    public bool directionChanged;
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1)) attackMode = 1;
@@ -30,7 +36,15 @@ public class WeaponController : MonoBehaviour
 
         float horizontalInput = Input.GetAxis("Horizontal");
 
-        bool directionChanged = Mathf.Sign(horizontalInput) != Mathf.Sign(lastHorizontalInput) && horizontalInput != 0;
+        if (bonus_shootrate_up)
+        {
+            directionChanged = true;
+        }
+        else
+        {
+            directionChanged = Mathf.Sign(horizontalInput) != Mathf.Sign(lastHorizontalInput) && horizontalInput != 0;
+
+        }
 
         if (attackMode == 1)
         {
@@ -39,11 +53,15 @@ public class WeaponController : MonoBehaviour
             if (directionChanged)
             {
                 FireBullet();
+                gameObject.GetComponent<AudioSource>().clip = shoot;
+                gameObject.GetComponent<AudioSource>().Play();
                 fireTimer = 0f;
             }
         }
         else if (attackMode == 2)
         {
+            gameObject.GetComponent<AudioSource>().clip = lazer;
+            gameObject.GetComponent<AudioSource>().Play();
             laserObject.SetActive(true);
         }
         else if (attackMode == 3)
@@ -53,6 +71,8 @@ public class WeaponController : MonoBehaviour
             if (directionChanged && rocketTimer <= 0f)
             {
                 LaunchRocket();
+                gameObject.GetComponent<AudioSource>().clip = rocket;
+                gameObject.GetComponent<AudioSource>().Play();
                 rocketTimer = rocketCooldown;
             }
         }
@@ -61,7 +81,7 @@ public class WeaponController : MonoBehaviour
         lastHorizontalInput = horizontalInput;
     }
 
-    void LaunchRocket()
+    public void LaunchRocket()
     {
         Instantiate(rocketPrefab, rocketSpawnPoint.position, rocketSpawnPoint.rotation);
     }

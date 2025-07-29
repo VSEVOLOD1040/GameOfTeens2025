@@ -5276,6 +5276,7 @@ MonoBehaviour:
   speed: 5
   rotateSpeed: 200
   lifetime: 5
+  explosion: {fileID: 8300000, guid: c3b1528c5a560c24fadd86277359ce31, type: 3}
 --- !u!50 &-6083959441917937006
 Rigidbody2D:
   serializedVersion: 4

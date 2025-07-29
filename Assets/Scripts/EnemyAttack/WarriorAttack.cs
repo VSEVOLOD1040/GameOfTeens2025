@@ -7,7 +7,7 @@ public class WarriorAttack : EnemyAttack
     public float attackRange = 1.5f;
 
     private float lastAttackTime = -Mathf.Infinity;
-
+    
     public override void PerformAttack(Transform target)
     {
         float distanceToTarget = Vector3.Distance(transform.position, target.position);
@@ -22,7 +22,12 @@ public class WarriorAttack : EnemyAttack
         PlayerScript player = target.GetComponent<PlayerScript>();
         if (player != null)
         {
-            player.TakeDamage(damageAmount);
+            if (target.GetComponent<BoxCollider2D>().enabled)
+            {
+                gameObject.GetComponent<AudioSource>().Play();
+                player.TakeDamage(damageAmount);
+            }
+            
         }
     }
 }

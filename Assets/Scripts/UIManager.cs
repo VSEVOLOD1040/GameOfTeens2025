@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 
@@ -22,17 +23,46 @@ public class UIManager : MonoBehaviour
 
     public TextMeshProUGUI WaveIndex;
     public TextMeshProUGUI DestroyedEnemies;
+
+    public AudioClip lose_sound;
+
+    public GameObject boostPanelPrefab;
+    public Transform boostPanelParent;
+    public GameObject Press123Text;
     void Start()
     {
-        
+
+
     }
 
 
     public void UpdateHealthBar(float fillamount)
     {
+        if (fillamount < Healthbar.fillAmount)
+        {
+            damageEffectCoroutine = StartCoroutine(ShowEffect(Color.red, fadeDuration, 0.1f));
+        }
+        else
+        {
+            damageEffectCoroutine = StartCoroutine(ShowEffect(Color.green, fadeDuration, 0.1f));
+
+        }
+        if (fillamount < 0.3)
+        {
+            Healthbar.color = Color.red;
+        }else if (fillamount < 0.6)
+        {
+            Healthbar.color = Color.yellow;
+        }
+        else
+        {
+            Healthbar.color = Color.green;
+
+        }
+
 
         Healthbar.fillAmount = fillamount;
-        damageEffectCoroutine = StartCoroutine(ShowEffect(Color.red, fadeDuration, 0.1f));
+        
     }
 
 
@@ -48,7 +78,6 @@ public class UIManager : MonoBehaviour
             elapsed += Time.deltaTime;
             float alpha = Mathf.Lerp(startAlpha, 0f, elapsed / fadeDuration);
             DamageOverlay.color = new Color(color.r, color.g, color.b, alpha);
-            Debug.Log("   alpha = " + alpha);
             yield return null;
         }
 
@@ -71,10 +100,18 @@ public class UIManager : MonoBehaviour
     {
         DestroyedEnemies.text = value;
     }
-    public void EndGame(float Time, float Score, float Kills)
+    public void EndGame(float Time, int Score, int Kills)
     {
+        Press123Text.SetActive(false);
+        if (Score > PlayerPrefs.GetInt("BestScore", 0))
+        { 
+            PlayerPrefs.SetInt("BestScore", Score);
+        }
 
-        LT_score.text = $"Score: {Score.ToString()}/{PlayerPrefs.GetFloat("BestScore",0)}";
+        gameObject.GetComponent<AudioSource>().clip = lose_sound;
+        gameObject.GetComponent<AudioSource>().Play();
+
+        LT_score.text = $"Score: {Score.ToString()}/{PlayerPrefs.GetInt("BestScore",0)}";
         LT_kills.text = $"Enemies destroyed: {Kills}";
         LT_time.text = $"Time: {FormatTime(Time)}";
         StartCoroutine(FadeIn(LoseBackground, 1.5f));
@@ -105,5 +142,35 @@ public class UIManager : MonoBehaviour
         color.a = 1f;
         img.color = color;
     }
+    public void ToMenu()
+    {
+        SceneManager.LoadScene(0);
 
+    }
+
+    public void ShowBoostPanel(string boostName, float duration)
+    {
+        GameObject panel = Instantiate(boostPanelPrefab, boostPanelParent);
+        Image fillImage = panel.transform.Find("TimeLeft").GetComponent<Image>();
+        TextMeshProUGUI text = panel.transform.Find("Name").GetComponentInChildren<TextMeshProUGUI>();
+
+        text.text = boostName;
+
+        StartCoroutine(UpdateBoostPanel(panel, fillImage, duration));
+    }
+
+    private IEnumerator UpdateBoostPanel(GameObject panel, Image fillImage, float duration)
+    {
+        float timer = 0f;
+
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+
+            fillImage.fillAmount = Mathf.Clamp01(1f - (timer / duration));
+            yield return null;
+        }
+
+        Destroy(panel);
+    }
 }

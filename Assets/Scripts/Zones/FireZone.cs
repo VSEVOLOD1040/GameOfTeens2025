@@ -20,7 +20,6 @@ public class FireZone : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        Debug.Log(collision.gameObject.ToString());
         if (collision.gameObject.TryGetComponent<PlayerScript>(out PlayerScript playerScript))
         {
             playerScript.TakeDamage(player_damage);

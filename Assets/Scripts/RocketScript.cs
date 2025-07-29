@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
 
 public class RocketScript : MonoBehaviour
 {
@@ -6,6 +7,8 @@ public class RocketScript : MonoBehaviour
     public float rotateSpeed = 200f;
     public float lifetime = 5f;
     private Transform target;
+    public AudioClip explosion;
+    
 
     void Start()
     {
@@ -46,6 +49,9 @@ public class RocketScript : MonoBehaviour
     {
         if (other.TryGetComponent<EnemyScript>(out EnemyScript es))
         {
+
+            AudioSource.PlayClipAtPoint(explosion, transform.position);
+
             Destroy(other.gameObject);
             Destroy(gameObject);
         }

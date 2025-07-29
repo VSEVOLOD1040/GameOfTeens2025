@@ -43,6 +43,10 @@ public class MapGenerator : MonoBehaviour
         AstarPath.active.Scan();
     }
 
+    public void GenerateBoxes(int amount)
+    {
+        GenerateRandom(amount, boxPrefab, treePrefab);
+    }
     void GenerateRandom(int Amount, GameObject Prefab, bool Rotate = true)
     {
         int spawned = 0;

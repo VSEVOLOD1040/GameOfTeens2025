@@ -7,6 +7,8 @@ public class BulletEnemyAttack : EnemyAttack
     public float fireRate = 1f;
     private float fireTimer;
     public float damage;
+
+    public AudioClip shoot;
     private void Update()
     {
         fireTimer += Time.deltaTime;
@@ -16,6 +18,9 @@ public class BulletEnemyAttack : EnemyAttack
     {
         if (fireTimer >= fireRate)
         {
+            gameObject.GetComponent<AudioSource>().clip = shoot;
+            gameObject.GetComponent<AudioSource>().Play();
+
             fireTimer = 0f;
             Vector2 direction = (target.position - firePoint.position).normalized;
             GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);

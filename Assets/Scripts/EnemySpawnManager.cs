@@ -50,18 +50,11 @@ public class EnemySpawnManager : MonoBehaviour
             wave4.Add(6, enemies[3]);
             wave5.Add(4, enemies[3]);
         }
-
-        if (enemiesParent == null)
-            Debug.LogError("enemiesParent не назначен в инспекторе!");
-
-        if (enemies == null || enemies.Count == 0)
-            Debug.LogError("Список enemies пуст или не назначен!");
-
-        for (int i = 0; i < enemies.Count; i++)
+        if (enemies.Count >= 5)
         {
-            if (enemies[i] == null)
-                Debug.LogError($"enemies[{i}] = null");
+            wave5.Add(9, enemies[4]);
         }
+
 
 
         StartCoroutine(WaveLoop());
@@ -87,6 +80,7 @@ public class EnemySpawnManager : MonoBehaviour
 
     private void StartWave(int index)
     {
+        gameObject.GetComponent<MapGenerator>().GenerateBoxes(index);
         Dictionary<int, GameObject> waveData = index switch
         {
             0 => wave1,
@@ -111,7 +105,9 @@ public class EnemySpawnManager : MonoBehaviour
             if (enemies.Count > 1) GenerateEnemiesAtEdges(7 + scale, enemies[1]);
             if (enemies.Count > 2) GenerateEnemiesAtEdges(4 + scale, enemies[2]);
             if (enemies.Count > 3) GenerateEnemiesAtEdges(2 + scale / 2, enemies[3]);
+            if (enemies.Count > 4) GenerateEnemiesAtEdges(1 + scale / 2, enemies[4]);
         }
+
     }
 
     void GenerateEnemiesAtEdges(int amount, GameObject enemyPrefab)
